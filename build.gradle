@@ -1,0 +1,19 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.5'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+}
+
+group = 'com.unita-legio'
+version = '0.0.1'
+sourceCompatibility = '17'
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
