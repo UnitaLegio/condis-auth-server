@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
     // Common +
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter'
 
     // Common -
 
@@ -38,7 +38,6 @@ dependencies {
 
     // Common tests +
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.projectreactor:reactor-test'
     // Common tests -
 }
 
