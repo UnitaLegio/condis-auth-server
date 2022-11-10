@@ -28,6 +28,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
 
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Configuration
 public class SecurityConfig {
 
@@ -53,6 +54,7 @@ public class SecurityConfig {
 
         RegisteredClient tempRegisteredClient = RegisteredClient
                 .withId("tempId")
+                .clientId("tempClientId")
                 .clientSecret("{noop}tempSecret")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
@@ -97,6 +99,6 @@ public class SecurityConfig {
     @Bean
     public ProviderSettings providerSettings() {
         // TODO: Inject provider parameters from configuration yaml;
-        return ProviderSettings.builder().issuer("unitalegio.ml").build();
+        return ProviderSettings.builder().issuer("http://unitalegio.ml").build();
     }
 }
