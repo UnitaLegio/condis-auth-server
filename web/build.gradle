@@ -19,10 +19,12 @@ repositories {
 }
 
 dependencies {
-    // Common +
+    // Core +
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+    // Core -
 
-    // Common -
 
     // Security +
     implementation 'org.springframework.boot:spring-boot-starter-security'
