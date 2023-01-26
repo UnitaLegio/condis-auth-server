@@ -22,7 +22,6 @@ dependencies {
     // Core +
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-//    implementation "org.springframework.boot:spring-boot-starter-tomcat"
     // Core -
 
 
@@ -38,11 +37,16 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     // Annotation processing -
 
-    // Common tests +
+    // Core tests +
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    // Common tests -
+//    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.0'
+    testImplementation 'net.sourceforge.htmlunit:htmlunit:2.67.0'
+//    testImplementation 'net.sourceforge.htmlunit:htmlunit'
+//    testImplementation 'org.apache.james:apache-mime4j-project:0.8.7'
+
+    // Core tests -
 }
 
-tasks.named('test') {
+tasks.withType(Test) {
     useJUnitPlatform()
 }
