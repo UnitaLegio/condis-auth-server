@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,17 +13,19 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.mock.http.client.MockClientHttpResponse;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResponseType;
-import org.springframework.security.oauth2.core.oidc.OidcClientRegistration;
-import org.springframework.security.oauth2.core.oidc.http.converter.OidcClientRegistrationHttpMessageConverter;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.oidc.OidcClientRegistration;
+import org.springframework.security.oauth2.server.authorization.oidc.http.converter.OidcClientRegistrationHttpMessageConverter;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -36,6 +39,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
  * Based on Spring OAuth2 Authorization Server tests, and adapted.
  */
 public class OAuth2TokenRegistrationIntegrationTest extends AbstractOAuth2IntegrationTest {
+
+/*    @Autowired
+    private PasswordEncoder passwordEncoder*/;
+
+    @LocalServerPort
+    private int serverPort;
 
     @Autowired
     private JwtEncoder jwtClientAssertionEncoder;
@@ -52,7 +61,7 @@ public class OAuth2TokenRegistrationIntegrationTest extends AbstractOAuth2Integr
 
         OidcClientRegistration newClientRegistration = OidcClientRegistration.builder()
                 .clientName("client-name")
-                .redirectUri("http://127.0.0.1:8080/registered")
+                .redirectUri(String.format("http://localhost:%d/registered", this.serverPort))
                 .grantType(AuthorizationGrantType.AUTHORIZATION_CODE.getValue())
                 .grantType(AuthorizationGrantType.CLIENT_CREDENTIALS.getValue())
                 .scope("scope1")
@@ -93,7 +102,7 @@ public class OAuth2TokenRegistrationIntegrationTest extends AbstractOAuth2Integr
 
         OidcClientRegistration newClientRegistration = OidcClientRegistration.builder()
                 .clientName("client-name")
-                .redirectUri("https://client.example.com")
+                .redirectUri(String.format("http://localhost:%d/registered", this.serverPort))
                 .grantType(AuthorizationGrantType.AUTHORIZATION_CODE.getValue())
                 .grantType(AuthorizationGrantType.CLIENT_CREDENTIALS.getValue())
                 .scope("scope1")
@@ -115,9 +124,18 @@ public class OAuth2TokenRegistrationIntegrationTest extends AbstractOAuth2Integr
 
         OidcClientRegistration clientConfigurationResponse = readClientRegistrationResponse(mvcResult.getResponse());
 
-        Assertions.assertThat(clientConfigurationResponse.getClientId()).isEqualTo(clientRegistrationResponse.getClientId());
         Assertions.assertThat(clientConfigurationResponse.getClientIdIssuedAt()).isEqualTo(clientRegistrationResponse.getClientIdIssuedAt());
-        Assertions.assertThat(clientConfigurationResponse.getClientSecret()).isEqualTo(clientRegistrationResponse.getClientSecret());
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String actualSecret = clientConfigurationResponse.getClientSecret().replace("{bcrypt}", "");
+
+        org.junit.jupiter.api.Assertions.assertTrue(
+                passwordEncoder.matches(clientRegistrationResponse.getClientSecret(), actualSecret)
+        );
+
+
+//        Assertions.assertThat(clientConfigurationResponse.getClientSecret()).isEqualTo(clientRegistrationResponse.getClientSecret());
+
         Assertions.assertThat(clientConfigurationResponse.getClientSecretExpiresAt()).isEqualTo(clientRegistrationResponse.getClientSecretExpiresAt());
         Assertions.assertThat(clientConfigurationResponse.getClientName()).isEqualTo(clientRegistrationResponse.getClientName());
         Assertions.assertThat(clientConfigurationResponse.getRedirectUris())

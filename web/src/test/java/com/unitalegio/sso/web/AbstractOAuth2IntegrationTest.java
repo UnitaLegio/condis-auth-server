@@ -5,7 +5,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.unitalegio.sso.web.configuration.DefaultTestConfiguration;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.mock.http.client.MockClientHttpResponse;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.oauth2.core.*;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResponseType;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
@@ -21,11 +25,13 @@ import org.springframework.security.oauth2.core.http.converter.OAuth2AccessToken
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationCode;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
-import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,11 +60,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * Abstract test class with common fields and methods.
  * </p>
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ContextConfiguration(classes = {
         UnitaLegioSsoServer.class,
         DefaultTestConfiguration.class})
 @AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AbstractOAuth2IntegrationTest {
 
     protected static final OAuth2TokenType AUTHORIZATION_CODE_TOKEN_TYPE = new OAuth2TokenType(OAuth2ParameterNames.CODE);
@@ -67,7 +74,7 @@ public abstract class AbstractOAuth2IntegrationTest {
     protected static final HttpMessageConverter<OAuth2AccessTokenResponse> accessTokenHttpResponseConverter =
             new OAuth2AccessTokenResponseHttpMessageConverter();
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+
     @Autowired
     protected MockMvc mvc;
 
@@ -75,7 +82,7 @@ public abstract class AbstractOAuth2IntegrationTest {
     protected RegisteredClientRepository registeredClientRepository;
 
     @Autowired
-    protected ProviderSettings providerSettings;
+    protected AuthorizationServerSettings providerSettings;
 
     @Autowired
     protected JwtDecoder jwtDecoder;
@@ -111,7 +118,7 @@ public abstract class AbstractOAuth2IntegrationTest {
      * @param clientNumber - number of new client.
      * @return persisted registered client.
      */
-    protected RegisteredClient registerAdditionalRegisteredClient(int clientNumber) {
+    protected RegisteredClient registerAdditionalRegisteredClient(int clientNumber, @Value("${server.port}") int serverPort) {
         RegisteredClient additionalClient = RegisteredClient
                 .withId(String.format("additional%dId", clientNumber))
                 .clientId(String.format("add%d-test-client", clientNumber))
@@ -123,7 +130,7 @@ public abstract class AbstractOAuth2IntegrationTest {
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .authorizationGrantType(AuthorizationGrantType.JWT_BEARER)
-                .redirectUri(String.format("http://127.0.0.1:8080/login/oauth2/code/add-%d-client-oids", clientNumber))
+                .redirectUri(String.format("http://localhost:%d/login/oauth2/code/add-%d-client-oids", serverPort, clientNumber))
                 .scope(OidcScopes.OPENID)
                 .scope("test.test1")
                 .scope("test.test2")
@@ -189,6 +196,7 @@ public abstract class AbstractOAuth2IntegrationTest {
 
     /**
      * This method gets registered client intended for only registration other clients.
+     *
      * @return registering client.
      */
     protected RegisteredClient getRegisteringRegisteredClient() {
@@ -355,8 +363,8 @@ public abstract class AbstractOAuth2IntegrationTest {
      * @throws Exception - mvc errors;
      */
     protected OAuth2AccessTokenResponse getValidOpaqueAccessTokenResponse(RegisteredClient registeredClient,
-                                                                    OAuth2Authorization authorization,
-                                                                    String tokenEndpointUri) throws Exception {
+                                                                          OAuth2Authorization authorization,
+                                                                          String tokenEndpointUri) throws Exception {
         MvcResult mvcResult = this.mvc.perform(post(tokenEndpointUri)
                         .params(getTokenRequestParameters(registeredClient, authorization))
                         .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeader(registeredClient)))

@@ -1,10 +1,10 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.5'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '3.0.6'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
 
-group = 'com.unita-legio'
+group = 'net.unita-legio'
 version = '0.0.1'
 sourceCompatibility = '17'
 allprojects {

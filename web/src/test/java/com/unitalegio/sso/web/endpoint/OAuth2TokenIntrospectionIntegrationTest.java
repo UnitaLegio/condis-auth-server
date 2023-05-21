@@ -6,17 +6,22 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.mock.http.client.MockClientHttpResponse;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.oauth2.core.*;
+import org.springframework.security.oauth2.core.AbstractOAuth2Token;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
-import org.springframework.security.oauth2.core.http.converter.OAuth2TokenIntrospectionHttpMessageConverter;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenIntrospection;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.http.converter.OAuth2TokenIntrospectionHttpMessageConverter;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsSet;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
@@ -39,6 +44,9 @@ import java.util.List;
  */
 public class OAuth2TokenIntrospectionIntegrationTest extends AbstractOAuth2IntegrationTest {
 
+    @LocalServerPort
+    private int serverPort;
+
     private static final HttpMessageConverter<OAuth2TokenIntrospection> tokenIntrospectionHttpResponseConverter =
             new OAuth2TokenIntrospectionHttpMessageConverter();
 
@@ -53,7 +61,9 @@ public class OAuth2TokenIntrospectionIntegrationTest extends AbstractOAuth2Integ
      */
     @Test
     public void requestWhenIntrospectValidAccessTokenThenActive() throws Exception {
-        RegisteredClient introspectRegisteredClient = registerAdditionalRegisteredClient(1);
+        RegisteredClient introspectRegisteredClient = registerAdditionalRegisteredClient(
+                1,
+                this.serverPort);
         RegisteredClient authorizedRegisteredClient = getNonConsentRegisteredClient();
 
         OAuth2Authorization authorization = authorizeNonConsentClient(
@@ -109,7 +119,7 @@ public class OAuth2TokenIntrospectionIntegrationTest extends AbstractOAuth2Integ
      */
     @Test
     public void requestWhenIntrospectValidRefreshTokenThenActive() throws Exception {
-        registerAdditionalRegisteredClient(1);
+        registerAdditionalRegisteredClient(1, this.serverPort);
         RegisteredClient introspectRegisteredClient = getAdditionalNonConsentRegisteredClient(1);
         RegisteredClient authorizedRegisteredClient = getNonConsentRegisteredClient();
         OAuth2Authorization authorization = authorizeNonConsentClient(
@@ -167,7 +177,7 @@ public class OAuth2TokenIntrospectionIntegrationTest extends AbstractOAuth2Integ
                 providerSettings.getTokenEndpoint()
         );
 
-        registerAdditionalRegisteredClient(1);
+        registerAdditionalRegisteredClient(1, this.serverPort);
         RegisteredClient introspectRegisteredClient = getAdditionalNonConsentRegisteredClient(1);
         OAuth2AccessToken accessToken = authorization.getAccessToken();
         // @formatter:off

@@ -10,9 +10,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 /**
  * @author Max Pestov, massenzio-p
  * @since 12.2022
- *
+ * <p>
  * Tests for jwk set endpoint.
- *
+ * <p>
  * Based on Spring OAuth2 Authorization Server tests, and adapted.
  */
 public class OAuth2JwkSetIntegrationIntegrationTest extends AbstractOAuth2IntegrationTest {

@@ -4,3 +4,5 @@ spring:
 logging:
   level:
     org.springframework.security: debug
+server:
+  port: 8080

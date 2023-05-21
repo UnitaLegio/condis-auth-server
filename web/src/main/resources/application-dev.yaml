@@ -1,3 +1,27 @@
 # Server port 9000 for comfortable local testing
 server:
   port: 9000
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://unitalegio.ml
+      client:
+        registration:
+          ul-sso:
+            client-id: ul-sso-client-id
+            client-name: ul-sso-client
+            client-secret: changeme
+            redirect-uri: http://redirect.somewhere
+            authorization-grant-type:
+              - client_credentials
+              - refresh_token
+            client-authentication-method: client_secret_post
+            provider:
+            scope:
+              - user.details
+
+logging:
+  level:
+    org.springframework: info

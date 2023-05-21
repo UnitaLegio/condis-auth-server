@@ -1,10 +1,10 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.5'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '3.0.6'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
 
-group = 'com.unita-legio.sso'
+group = 'net.unita-legio.sso'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
@@ -27,9 +27,8 @@ dependencies {
 
     // Security +
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-authorization-server', version: '0.3.1'
+    implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.0.2'
 
-    testImplementation 'org.springframework.security:spring-security-test'
     // Security -
 
     // Annotation processing +
@@ -39,8 +38,14 @@ dependencies {
 
     // Core tests +
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    // TODO: Upgrade HtmlUnit lib
+    testImplementation 'net.sourceforge.htmlunit:htmlunit:2.70.0'
+
+    testImplementation 'org.projectlombok:lombok:1.18.26'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+
 //    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.0'
-    testImplementation 'net.sourceforge.htmlunit:htmlunit:2.67.0'
 //    testImplementation 'net.sourceforge.htmlunit:htmlunit'
 //    testImplementation 'org.apache.james:apache-mime4j-project:0.8.7'
 

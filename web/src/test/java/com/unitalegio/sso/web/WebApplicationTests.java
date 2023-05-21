@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Test;
 class WebApplicationTests {
     @Test
     void contextLoads() {
-    }
 
-    @Test
-    public void test() {
     }
 
 }

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,23 +20,35 @@ import java.io.IOException;
 
 /**
  * @since 12.2022
- *
+ * <p>
  * Default user authentication behaviour tests.
  * Largely copied from spring-authorization-server samples tests, and adopted.
  */
 public class DefaultAuthorizationIntegrationTests extends AbstractOAuth2IntegrationTest {
 
-    private static final String REDIRECT_URI = "http://127.0.0.1:8080/login/oauth2/code/test-client-oids";
-    private static final String AUTHORIZATION_REQUEST = UriComponentsBuilder
-            .fromPath("/oauth2/authorize")
-            .queryParam("response_type", "code")
-            .queryParam("client_id", "test-client")
-            .queryParam("scope", "openid")
-            .queryParam("state", "some-state")
-            .queryParam("redirect_uri", REDIRECT_URI)
-            .toUriString();
+    private final int serverPort;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    private final String REDIRECT_URI;
+
+    //    private final String REDIRECT_URI;
+
+    private final String AUTHORIZATION_REQUEST;
+
+    public DefaultAuthorizationIntegrationTests(@LocalServerPort int serverPort) {
+        this.serverPort = serverPort;
+        REDIRECT_URI = String.format(
+                "http://localhost:%d/login/oauth2/code/test-client-oids",
+                this.serverPort);
+        AUTHORIZATION_REQUEST = UriComponentsBuilder
+                .fromPath("/oauth2/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", "test-client")
+                .queryParam("scope", "openid")
+                .queryParam("state", "some-state")
+                .queryParam("redirect_uri", REDIRECT_URI)
+                .toUriString();
+    }
+
     @Autowired
     private WebClient webClient;
 
@@ -55,7 +68,7 @@ public class DefaultAuthorizationIntegrationTests extends AbstractOAuth2Integrat
      */
     @Test
     public void whenLoginSuccessfulThenDisplayNotFoundError() throws IOException {
-        HtmlPage page = this.webClient.getPage("/");
+        HtmlPage page = this.webClient.getPage("/login");
         assertLoginPage(page);
 
         this.webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
@@ -73,7 +86,7 @@ public class DefaultAuthorizationIntegrationTests extends AbstractOAuth2Integrat
      */
     @Test
     public void whenLoginFailsThenDisplayBadCredentials() throws IOException {
-        HtmlPage loginPage = this.webClient.getPage("/");
+        HtmlPage loginPage = this.webClient.getPage("/login");
 
         HtmlPage loginErrorPage = signIn(loginPage, DefaultTestConfiguration.USERNAME_1, "wrongPassword");
 
@@ -90,7 +103,7 @@ public class DefaultAuthorizationIntegrationTests extends AbstractOAuth2Integrat
      */
     @Test
     public void whenNotLoggedInAndRequestingTokenThenRedirectsToLogin() throws IOException {
-        HtmlPage page = this.webClient.getPage(AUTHORIZATION_REQUEST);
+        HtmlPage page = this.webClient.getPage(String.format(AUTHORIZATION_REQUEST, this.serverPort));
         assertLoginPage(page);
     }
 
@@ -110,7 +123,9 @@ public class DefaultAuthorizationIntegrationTests extends AbstractOAuth2Integrat
         );
 
         // Request token
-        WebResponse response = this.webClient.getPage(AUTHORIZATION_REQUEST).getWebResponse();
+        WebResponse response = this.webClient
+                .getPage(AUTHORIZATION_REQUEST)
+                .getWebResponse();
 
         Assertions.assertEquals(HttpStatus.MOVED_PERMANENTLY.value(), response.getStatusCode());
         String location = response.getResponseHeaderValue("location");
