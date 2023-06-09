@@ -1,18 +1,49 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.5'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
 
 group = 'com.unita-legio'
 version = '0.0.1'
 sourceCompatibility = '17'
-allprojects {
-    repositories {
-        mavenCentral()
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Annotation processing +
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    // Annotation processing -
+
+    // Core +
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'net.sourceforge.htmlunit:htmlunit:2.70.0'
+
+    // Core -
+
+    // Security +
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-authorization-server', version: '0.3.1'
+
+    testImplementation 'org.springframework.security:spring-security-test'
+    // Security -
+
+    // Data +
+        implementation 'org.springframework.data:spring-data-jpa:3.1.0'
+    // Data
+}
 
 tasks.named('test') {
     useJUnitPlatform()
