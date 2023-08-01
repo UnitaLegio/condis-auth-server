@@ -1,0 +1,14 @@
+# Server port 9000 for comfortable local testing
+server:
+  port: 9000
+ul:
+  issuer: http://unitalegio.ml
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver

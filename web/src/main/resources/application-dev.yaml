@@ -1,3 +1,0 @@
-# Server port 9000 for comfortable local testing
-server:
-  port: 9000

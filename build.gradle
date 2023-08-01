@@ -1,19 +1,57 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.5'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
 
 group = 'com.unita-legio'
 version = '0.0.1'
 sourceCompatibility = '17'
-allprojects {
-    repositories {
-        mavenCentral()
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Annotation processing +
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    // Annotation processing -
+
+    // Core +
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'net.sourceforge.htmlunit:htmlunit:2.70.0'
+
+    // Core -
+
+    // Security +
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.1.1'
+
+    testImplementation 'org.springframework.security:spring-security-test'
+    // Security -
+
+    // Data +
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
+    compileOnly 'com.mysql:mysql-connector-j:8.0.32'
+    testImplementation 'com.h2database:h2:2.1.214'
+    // Data
+}
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named('compileJava') {
+    inputs.files(tasks.named('processResources'))
 }
