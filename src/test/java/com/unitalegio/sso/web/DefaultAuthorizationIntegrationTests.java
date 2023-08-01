@@ -21,7 +21,7 @@ import java.io.IOException;
  * @since 12.2022
  *
  * Default user authentication behaviour tests.
- * Largely copied from spring-authorization-server samples tests, and adopted.
+ * Based on spring-authorization-server samples tests and adapted.
  */
 public class DefaultAuthorizationIntegrationTests extends AbstractOAuth2IntegrationTest {
 
@@ -49,7 +49,7 @@ public class DefaultAuthorizationIntegrationTests extends AbstractOAuth2Integrat
 
     /**
      * Tests if 404 returns correctly after successful user's login action.
-     * It is needed, because there is not some index page at this sso server;
+     * It is needed, because there is no some index page at this sso server yet;
      *
      * @throws IOException, when occurs something about dark magic in HtmlUnit library or in its dependencies;
      */

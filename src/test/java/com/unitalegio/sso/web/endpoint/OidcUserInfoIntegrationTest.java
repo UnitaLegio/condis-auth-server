@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 /**
- * @author Max Pestov, massenzio
+ * @author massenzio-p
  * @since 01.2023
  * <p>
  * Tests for user info endpoint.
@@ -27,7 +27,7 @@ public class OidcUserInfoIntegrationTest extends AbstractOAuth2IntegrationTest {
      */
     @Test
     public void requestWhenUserInfoRequestGetThenUserInfoResponse() throws Exception {
-        testUserInfo(MockMvcRequestBuilders.get(providerSettings.getOidcUserInfoEndpoint()));
+        testUserInfo(MockMvcRequestBuilders.get(authServerSettings.getOidcUserInfoEndpoint()));
     }
 
     /**
@@ -36,7 +36,7 @@ public class OidcUserInfoIntegrationTest extends AbstractOAuth2IntegrationTest {
      */
     @Test
     public void requestWhenUserInfoRequestPostThenUserInfoResponse() throws Exception {
-        testUserInfo(MockMvcRequestBuilders.post(providerSettings.getOidcUserInfoEndpoint()));
+        testUserInfo(MockMvcRequestBuilders.post(authServerSettings.getOidcUserInfoEndpoint()));
     }
 
     /**
@@ -62,12 +62,12 @@ public class OidcUserInfoIntegrationTest extends AbstractOAuth2IntegrationTest {
         RegisteredClient registeredClient = getNonConsentRegisteredClient();
         OAuth2Authorization authorization = authorizeNonConsentClient(
                 registeredClient,
-                providerSettings.getAuthorizationEndpoint()
+                authServerSettings.getAuthorizationEndpoint()
         );
         authorization = authorizeUserAndGetAccessToken(
                 registeredClient,
                 authorization,
-                providerSettings.getTokenEndpoint()
+                authServerSettings.getTokenEndpoint()
         );
         return authorization.getAccessToken().getToken();
     }

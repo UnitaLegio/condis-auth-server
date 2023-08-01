@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
-import org.springframework.security.oauth2.core.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 /**
- * @author Max Pestov, massenzio-p
+ * @author massenzio-p
  * @since 12.2022
  *
  * Tests token revocation.
@@ -33,19 +33,19 @@ public class OAuth2TokenRevocationIntegrationIntegrationTest extends AbstractOAu
 
         OAuth2Authorization authorization = super.authorizeNonConsentClient(
                 registeredClient,
-                providerSettings.getAuthorizationEndpoint()
+                authServerSettings.getAuthorizationEndpoint()
         );
         authorization = authorizeUserAndGetAccessToken(
                 registeredClient,
                 authorization,
-                providerSettings.getTokenEndpoint()
+                authServerSettings.getTokenEndpoint()
         );
 
         OAuth2RefreshToken token = authorization.getRefreshToken().getToken();
         OAuth2TokenType tokenType = OAuth2TokenType.REFRESH_TOKEN;
 
         this.mvc.perform(MockMvcRequestBuilders
-                        .post(providerSettings.getTokenRevocationEndpoint())
+                        .post(authServerSettings.getTokenRevocationEndpoint())
                         .params(getTokenRevocationRequestParameters(token, tokenType))
                         .header(
                                 HttpHeaders.AUTHORIZATION,
@@ -72,17 +72,17 @@ public class OAuth2TokenRevocationIntegrationIntegrationTest extends AbstractOAu
 
         RegisteredClient registeredClient = getNonConsentRegisteredClient();
 
-        OAuth2Authorization authorization = authorizeNonConsentClient(registeredClient, providerSettings.getAuthorizationEndpoint());
+        OAuth2Authorization authorization = authorizeNonConsentClient(registeredClient, authServerSettings.getAuthorizationEndpoint());
         authorization = authorizeUserAndGetAccessToken(
                 registeredClient,
                 authorization,
-                providerSettings.getTokenEndpoint()
+                authServerSettings.getTokenEndpoint()
         );
         OAuth2AccessToken token = authorization.getAccessToken().getToken();
         OAuth2TokenType tokenType = OAuth2TokenType.ACCESS_TOKEN;
         this.authorizationService.save(authorization);
 
-        this.mvc.perform(MockMvcRequestBuilders.post(providerSettings.getTokenRevocationEndpoint())
+        this.mvc.perform(MockMvcRequestBuilders.post(authServerSettings.getTokenRevocationEndpoint())
                         .params(getTokenRevocationRequestParameters(token, tokenType))
                         .header(HttpHeaders.AUTHORIZATION, "Basic " + encodeBasicAuth(
                                 registeredClient.getClientId(),

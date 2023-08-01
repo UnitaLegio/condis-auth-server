@@ -1,13 +1,13 @@
-package com.unitalegio.sso.web;
+package com.unitalegio.condis.sso;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UnitaLegioSsoServer {
+public class CondisSsoServer {
 
     public static void main(String[] args) {
-        SpringApplication.run(UnitaLegioSsoServer.class, args);
+        SpringApplication.run(CondisSsoServer.class, args);
     }
 
 }

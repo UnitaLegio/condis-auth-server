@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.unitalegio.condis.sso.usecase.user_details.CondisUserAdapterComponentTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2023-08-01T17:30:18" hostname="MAS-LAPTOP" time="1.643">
+  <properties/>
+  <testcase name="testUserNotFoundException()" classname="com.unitalegio.condis.sso.usecase.user_details.CondisUserAdapterComponentTest" time="1.436"/>
+  <testcase name="testUserIsLoadedProperly()" classname="com.unitalegio.condis.sso.usecase.user_details.CondisUserAdapterComponentTest" time="0.201"/>
+  <system-out><![CDATA[21:30:05.378 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.unitalegio.condis.sso.usecase.user_details.CondisUserAdapterComponentTest]: CondisUserAdapterComponentTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+21:30:05.760 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.unitalegio.condis.sso.CondisSsoServer for test class com.unitalegio.condis.sso.usecase.user_details.CondisUserAdapterComponentTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.1.0)
+
+2023-08-01T21:30:07.190+04:00  INFO 6124 --- [    Test worker] u.c.s.u.u.CondisUserAdapterComponentTest : Starting CondisUserAdapterComponentTest using Java 17.0.1 with PID 6124 (started by massenzio in C:\dev\systems\unitalegio\condis\condis-sso)
+2023-08-01T21:30:07.194+04:00  INFO 6124 --- [    Test worker] u.c.s.u.u.CondisUserAdapterComponentTest : No active profile set, falling back to 1 default profile: "default"
+2023-08-01T21:30:09.179+04:00  INFO 6124 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-08-01T21:30:09.344+04:00  INFO 6124 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 137 ms. Found 2 JPA repository interfaces.
+2023-08-01T21:30:10.479+04:00  INFO 6124 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-08-01T21:30:10.992+04:00  INFO 6124 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testDb/condis_sso user=SA
+2023-08-01T21:30:10.996+04:00  INFO 6124 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-08-01T21:30:11.365+04:00  INFO 6124 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-08-01T21:30:11.581+04:00  INFO 6124 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.2.2.Final
+2023-08-01T21:30:11.592+04:00  INFO 6124 --- [    Test worker] org.hibernate.cfg.Environment            : HHH000406: Using bytecode reflection optimizer
+2023-08-01T21:30:12.016+04:00  INFO 6124 --- [    Test worker] o.h.b.i.BytecodeProviderInitiator        : HHH000021: Bytecode provider name : bytebuddy
+2023-08-01T21:30:12.463+04:00  INFO 6124 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2023-08-01T21:30:12.561+04:00  WARN 6124 --- [    Test worker] org.hibernate.dialect.Dialect            : HHH000511: The 2.1.0 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 5.7.0. Check the community dialects project for available legacy versions.
+2023-08-01T21:30:12.572+04:00  INFO 6124 --- [    Test worker] org.hibernate.orm.dialect                : HHH035001: Using dialect: org.hibernate.dialect.MySQLDialect, version: 2.1
+2023-08-01T21:30:13.114+04:00  INFO 6124 --- [    Test worker] o.h.b.i.BytecodeProviderInitiator        : HHH000021: Bytecode provider name : bytebuddy
+2023-08-01T21:30:14.592+04:00  INFO 6124 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-08-01T21:30:14.597+04:00  INFO 6124 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-08-01T21:30:15.504+04:00  WARN 6124 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Authorization endpoint -> /oauth2/authorize
+Token endpoint -> /oauth2/token
+Jwk set endpoint -> /oauth2/jwks
+Oidc client registration endpoint -> /connect/register
+Oidc user info endpoint -> /userinfo
+Token introspection endpoint -> /oauth2/introspect
+Token revocation endpoint -> /oauth2/revoke
+
+Issuer -> http://unitalegio.ml
+OpenId configuration -> /.well-known/openid-configuration2023-08-01T21:30:17.493+04:00  INFO 6124 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer$$Lambda$1350/0x000000080141aad8@3bdc8975 with [org.springframework.security.web.session.DisableEncodeUrlFilter@27ea552d, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7a57c5d9, org.springframework.security.web.context.SecurityContextHolderFilter@3f919230, org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.AuthorizationServerContextFilter@47800bd7, org.springframework.security.web.header.HeaderWriterFilter@4f571c0e, org.springframework.security.oauth2.server.authorization.oidc.web.OidcLogoutEndpointFilter@7f1b2f07, org.springframework.security.web.authentication.logout.LogoutFilter@22cce199, org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationServerMetadataEndpointFilter@c7b100b, org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter@1cb73a92, org.springframework.security.oauth2.server.authorization.web.OAuth2DeviceVerificationEndpointFilter@5eadc347, org.springframework.security.oauth2.server.authorization.oidc.web.OidcProviderConfigurationEndpointFilter@5b4ce00, org.springframework.security.oauth2.server.authorization.web.NimbusJwkSetEndpointFilter@f9979cf, org.springframework.security.oauth2.server.authorization.web.OAuth2ClientAuthenticationFilter@1a22325d, org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter@65871cfd, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@21251e43, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1f7949dc, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@742aa00a, org.springframework.security.web.access.ExceptionTranslationFilter@1a99744a, org.springframework.security.web.access.intercept.AuthorizationFilter@3549c070, org.springframework.security.oauth2.server.authorization.web.OAuth2TokenEndpointFilter@644c3590, org.springframework.security.oauth2.server.authorization.web.OAuth2TokenIntrospectionEndpointFilter@27adb90f, org.springframework.security.oauth2.server.authorization.web.OAuth2TokenRevocationEndpointFilter@57a0aeb8, org.springframework.security.oauth2.server.authorization.web.OAuth2DeviceAuthorizationEndpointFilter@44181746, org.springframework.security.oauth2.server.authorization.oidc.web.OidcUserInfoEndpointFilter@4d2f8ee7, org.springframework.security.oauth2.server.authorization.oidc.web.OidcClientRegistrationEndpointFilter@3cc2c4b8]
+2023-08-01T21:30:18.739+04:00  WARN 6124 --- [    Test worker] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Mvc [pattern='/css/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2023-08-01T21:30:18.740+04:00  INFO 6124 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Mvc [pattern='/css/**']
+2023-08-01T21:30:18.741+04:00  WARN 6124 --- [    Test worker] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Mvc [pattern='/js/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2023-08-01T21:30:18.741+04:00  INFO 6124 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Mvc [pattern='/js/**']
+2023-08-01T21:30:18.742+04:00  WARN 6124 --- [    Test worker] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Mvc [pattern='/img/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2023-08-01T21:30:18.742+04:00  INFO 6124 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Mvc [pattern='/img/**']
+2023-08-01T21:30:18.742+04:00  WARN 6124 --- [    Test worker] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Mvc [pattern='/lib/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2023-08-01T21:30:18.742+04:00  INFO 6124 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Mvc [pattern='/lib/**']
+2023-08-01T21:30:18.743+04:00  WARN 6124 --- [    Test worker] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Mvc [pattern='/favicon.ico']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2023-08-01T21:30:18.744+04:00  INFO 6124 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Mvc [pattern='/favicon.ico']
+2023-08-01T21:30:18.893+04:00  INFO 6124 --- [    Test worker] u.c.s.u.u.CondisUserAdapterComponentTest : Started CondisUserAdapterComponentTest in 12.605 seconds (process running for 15.97)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.credentials,u1_0.email,u1_0.enabled,u1_0.updated_at,u1_0.username from condis_sso.sso_user u1_0 where u1_0.username=?
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.credentials,u1_0.email,u1_0.enabled,u1_0.updated_at,u1_0.username from condis_sso.sso_user u1_0 where u1_0.id=?
+Hibernate: insert into condis_sso.sso_user (credentials,email,enabled,username) values (?,?,?,?)
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.credentials,u1_0.email,u1_0.enabled,u1_0.updated_at,u1_0.username from condis_sso.sso_user u1_0 where u1_0.username=?
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.credentials,u1_0.email,u1_0.enabled,u1_0.updated_at,u1_0.username from condis_sso.sso_user u1_0 where u1_0.id=?
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

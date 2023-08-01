@@ -11,12 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.mock.http.client.MockClientHttpResponse;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.oauth2.core.*;
+import org.springframework.security.oauth2.core.AbstractOAuth2Token;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
-import org.springframework.security.oauth2.core.http.converter.OAuth2TokenIntrospectionHttpMessageConverter;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenIntrospection;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.http.converter.OAuth2TokenIntrospectionHttpMessageConverter;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsSet;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
@@ -30,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Max Pestov, massenzio-p
+ * @author massenzio-p
  * @since 12.2022
  * <p>
  * Tests for token introspection.
@@ -58,18 +62,18 @@ public class OAuth2TokenIntrospectionIntegrationTest extends AbstractOAuth2Integ
 
         OAuth2Authorization authorization = authorizeNonConsentClient(
                 authorizedRegisteredClient,
-                providerSettings.getAuthorizationEndpoint()
+                authServerSettings.getAuthorizationEndpoint()
         );
         authorization = authorizeUserAndGetAccessToken(
                 authorizedRegisteredClient,
                 authorization,
-                providerSettings.getTokenEndpoint()
+                authServerSettings.getTokenEndpoint()
         );
 
         OAuth2AccessToken accessToken = authorization.getAccessToken().getToken();
         // @formatter:off
         MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders
-                        .post(providerSettings.getTokenIntrospectionEndpoint())
+                        .post(authServerSettings.getTokenIntrospectionEndpoint())
                         .params(getTokenIntrospectionRequestParameters(accessToken, OAuth2TokenType.ACCESS_TOKEN))
                         .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeader(introspectRegisteredClient)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -114,17 +118,17 @@ public class OAuth2TokenIntrospectionIntegrationTest extends AbstractOAuth2Integ
         RegisteredClient authorizedRegisteredClient = getNonConsentRegisteredClient();
         OAuth2Authorization authorization = authorizeNonConsentClient(
                 authorizedRegisteredClient,
-                providerSettings.getAuthorizationEndpoint()
+                authServerSettings.getAuthorizationEndpoint()
         );
         authorization = authorizeUserAndGetAccessToken(
                 authorizedRegisteredClient,
                 authorization,
-                providerSettings.getTokenEndpoint()
+                authServerSettings.getTokenEndpoint()
         );
         OAuth2RefreshToken refreshToken = authorization.getRefreshToken().getToken();
 
         // @formatter:off
-        MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders.post(providerSettings.getTokenIntrospectionEndpoint())
+        MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders.post(authServerSettings.getTokenIntrospectionEndpoint())
                         .params(getTokenIntrospectionRequestParameters(refreshToken, OAuth2TokenType.REFRESH_TOKEN))
                         .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeader(introspectRegisteredClient)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -159,12 +163,12 @@ public class OAuth2TokenIntrospectionIntegrationTest extends AbstractOAuth2Integ
         RegisteredClient authorizedRegisteredClient = getNonConsentRegisteredClientWorkingWithOpaqueToken();
         OAuth2Authorization regClientAuthorization = authorizeNonConsentClient(
                 authorizedRegisteredClient,
-                providerSettings.getAuthorizationEndpoint()
+                authServerSettings.getAuthorizationEndpoint()
         );
         OAuth2AccessTokenResponse authorization = getValidOpaqueAccessTokenResponse(
                 authorizedRegisteredClient,
                 regClientAuthorization,
-                providerSettings.getTokenEndpoint()
+                authServerSettings.getTokenEndpoint()
         );
 
         registerAdditionalRegisteredClient(1);
@@ -172,7 +176,7 @@ public class OAuth2TokenIntrospectionIntegrationTest extends AbstractOAuth2Integ
         OAuth2AccessToken accessToken = authorization.getAccessToken();
         // @formatter:off
         MvcResult mvcResult = this.mvc.perform(
-                MockMvcRequestBuilders.post(providerSettings.getTokenIntrospectionEndpoint())
+                MockMvcRequestBuilders.post(authServerSettings.getTokenIntrospectionEndpoint())
                         .params(getTokenIntrospectionRequestParameters(accessToken, OAuth2TokenType.ACCESS_TOKEN))
                         .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeader(introspectRegisteredClient)))
                 .andExpect(MockMvcResultMatchers.status().isOk())

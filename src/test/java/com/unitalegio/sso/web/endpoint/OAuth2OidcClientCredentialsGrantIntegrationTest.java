@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.ArgumentMatchers.any;
 
 /**
- * @author Max Pestov, massenzio-p
+ * @author massenzio-p
  * @since 12.2022
  *
  * Tests authentication with client credentials
@@ -35,7 +35,7 @@ public class OAuth2OidcClientCredentialsGrantIntegrationTest extends AbstractOAu
      */
     @Test
     public void requestWhenTokenRequestNotAuthenticatedThenRedirect() throws Exception {
-        super.mvc.perform(MockMvcRequestBuilders.post(super.providerSettings.getTokenEndpoint())
+        super.mvc.perform(MockMvcRequestBuilders.post(super.authServerSettings.getTokenEndpoint())
                         .param(OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrantType.CLIENT_CREDENTIALS.getValue()))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection());
     }
@@ -51,7 +51,7 @@ public class OAuth2OidcClientCredentialsGrantIntegrationTest extends AbstractOAu
         RegisteredClient registeredClient = getNonConsentRegisteredClient();
         String scopes = getRegisteredClientScopesString(registeredClient);
 
-        this.mvc.perform(MockMvcRequestBuilders.post(providerSettings.getTokenEndpoint())
+        this.mvc.perform(MockMvcRequestBuilders.post(authServerSettings.getTokenEndpoint())
                         .param(OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrantType.CLIENT_CREDENTIALS.getValue())
                         .param(OAuth2ParameterNames.SCOPE, scopes)
                         .header(HttpHeaders.AUTHORIZATION, "Basic " + encodeBasicAuth(
@@ -88,7 +88,7 @@ public class OAuth2OidcClientCredentialsGrantIntegrationTest extends AbstractOAu
         RegisteredClient registeredClient = getNonConsentRegisteredClient();
         String scopes = getRegisteredClientScopesString(registeredClient);
 
-        this.mvc.perform(MockMvcRequestBuilders.post(providerSettings.getTokenEndpoint())
+        this.mvc.perform(MockMvcRequestBuilders.post(authServerSettings.getTokenEndpoint())
                         .param(OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrantType.CLIENT_CREDENTIALS.getValue())
                         .param(OAuth2ParameterNames.SCOPE, scopes)
                         .param(OAuth2ParameterNames.CLIENT_ID, registeredClient.getClientId())

@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.OAuth2TokenFormat;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -26,9 +25,10 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
-import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
-import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import java.security.KeyPair;
@@ -50,8 +50,8 @@ public class DefaultTestConfiguration {
 
 
     @Bean
-    public ProviderSettings providerSettings() {
-        return ProviderSettings.builder().issuer(ISSUER).build();
+    public AuthorizationServerSettings providerSettings() {
+        return AuthorizationServerSettings.builder().issuer(ISSUER).build();
     }
 
     @Bean
@@ -162,9 +162,9 @@ public class DefaultTestConfiguration {
     }
 
     @Bean
-    public JwtDecoder jwtDecoder(ProviderSettings providerSettings) {
+    public JwtDecoder jwtDecoder(AuthorizationServerSettings settings) {
         return NimbusJwtDecoder
-                .withJwkSetUri("http://127.0.0.1:8080" + providerSettings.getJwkSetEndpoint())
+                .withJwkSetUri("http://127.0.0.1:8080" + settings.getJwkSetEndpoint())
                 .jwsAlgorithm(SignatureAlgorithm.RS256) // Default in JwtEncoder
                 .build();
     }

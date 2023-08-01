@@ -12,11 +12,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2TokenType;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author Max Pestov, massenzio-p
+ * @author massenzio-p
  * @since 12.2022
  *
  * Tests token refreshing.
@@ -50,14 +50,14 @@ public class OAuth2RefreshTokenGrantIntegrationTest extends AbstractOAuth2Integr
 
         OAuth2Authorization authorization = super.authorizeNonConsentClient(
                 registeredClient,
-                super.providerSettings.getAuthorizationEndpoint());
+                super.authServerSettings.getAuthorizationEndpoint());
         authorization = super.authorizeUserAndGetAccessToken(
                 registeredClient,
                 authorization,
-                super.providerSettings.getTokenEndpoint()
+                super.authServerSettings.getTokenEndpoint()
         );
 
-        MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders.post(super.providerSettings.getTokenEndpoint())
+        MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders.post(super.authServerSettings.getTokenEndpoint())
                         .params(getRefreshTokenRequestParameters(authorization))
                         .header(HttpHeaders.AUTHORIZATION, "Basic " + encodeBasicAuth(
                                 registeredClient.getClientId(),
@@ -112,15 +112,15 @@ public class OAuth2RefreshTokenGrantIntegrationTest extends AbstractOAuth2Integr
     @Test
     public void requestWhenRevokeAndRefreshThenAccessTokenActive() throws Exception {
         RegisteredClient registeredClient = getNonConsentRegisteredClient();
-        OAuth2Authorization authorization = authorizeNonConsentClient(registeredClient, providerSettings.getAuthorizationEndpoint());
+        OAuth2Authorization authorization = authorizeNonConsentClient(registeredClient, authServerSettings.getAuthorizationEndpoint());
         authorization = authorizeUserAndGetAccessToken(
                 registeredClient,
                 authorization,
-                providerSettings.getTokenEndpoint());
+                authServerSettings.getTokenEndpoint());
         OAuth2AccessToken token = authorization.getAccessToken().getToken();
         OAuth2TokenType tokenType = OAuth2TokenType.ACCESS_TOKEN;
 
-        this.mvc.perform(MockMvcRequestBuilders.post(providerSettings.getTokenRevocationEndpoint())
+        this.mvc.perform(MockMvcRequestBuilders.post(authServerSettings.getTokenRevocationEndpoint())
                         .params(getTokenRevocationRequestParameters(token, tokenType))
                         .header(HttpHeaders.AUTHORIZATION, "Basic " + encodeBasicAuth(
                                 registeredClient.getClientId(),
@@ -128,7 +128,7 @@ public class OAuth2RefreshTokenGrantIntegrationTest extends AbstractOAuth2Integr
                         ))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        this.mvc.perform(MockMvcRequestBuilders.post(providerSettings.getTokenEndpoint())
+        this.mvc.perform(MockMvcRequestBuilders.post(authServerSettings.getTokenEndpoint())
                         .params(getRefreshTokenRequestParameters(authorization))
                         .header(HttpHeaders.AUTHORIZATION, "Basic " + encodeBasicAuth(
                                 registeredClient.getClientId(),

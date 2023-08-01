@@ -16,19 +16,19 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResponseType;
-import org.springframework.security.oauth2.core.oidc.OidcClientRegistration;
-import org.springframework.security.oauth2.core.oidc.http.converter.OidcClientRegistrationHttpMessageConverter;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.oidc.OidcClientRegistration;
+import org.springframework.security.oauth2.server.authorization.oidc.http.converter.OidcClientRegistrationHttpMessageConverter;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 /**
- * @author Max Pestov, massenzio
+ * @author massenzio-p
  * @since 01.2023
  *
  * This tests oAuth2 client registration endpoint;
@@ -154,8 +154,8 @@ public class OAuth2TokenRegistrationIntegrationTest extends AbstractOAuth2Integr
         JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(jwsHeader, jwtClaimsSet);
         Jwt jwtAssertion = jwtClientAssertionEncoder.encode(jwtEncoderParameters);*/
 
-        OAuth2Authorization authorization = authorizeNonConsentClient(clientRegistrar, providerSettings.getAuthorizationEndpoint());
-        authorization = authorizeUserAndGetAccessToken(clientRegistrar, authorization, providerSettings.getTokenEndpoint());
+        OAuth2Authorization authorization = authorizeNonConsentClient(clientRegistrar, authServerSettings.getAuthorizationEndpoint());
+        authorization = authorizeUserAndGetAccessToken(clientRegistrar, authorization, authServerSettings.getTokenEndpoint());
         OAuth2AccessToken accessToken = authorization.getAccessToken().getToken();
 
         // ***** (2) Register the client
@@ -164,7 +164,7 @@ public class OAuth2TokenRegistrationIntegrationTest extends AbstractOAuth2Integr
         httpHeaders.setBearerAuth(accessToken.getTokenValue());
 
         // Register the client
-        MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders.post(providerSettings.getOidcClientRegistrationEndpoint())
+        MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders.post(authServerSettings.getOidcClientRegistrationEndpoint())
                         .headers(httpHeaders)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getClientRegistrationRequestContent(clientRegistration)))

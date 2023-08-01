@@ -1,4 +1,4 @@
-package com.unitalegio.sso.web.config;
+package com.unitalegio.condis.sso.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;

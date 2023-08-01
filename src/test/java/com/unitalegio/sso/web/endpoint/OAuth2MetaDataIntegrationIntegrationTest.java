@@ -25,7 +25,7 @@ public class OAuth2MetaDataIntegrationIntegrationTest extends AbstractOAuth2Inte
     public void requestWhenAuthorizationServerMetadataRequestAndIssuerSetThenReturnMetadataResponse() throws Exception {
         super.mvc.perform(MockMvcRequestBuilders.get(DEFAULT_OAUTH2_AUTHORIZATION_SERVER_METADATA_ENDPOINT_URI))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.jsonPath("issuer").value(providerSettings.getIssuer()))
+                .andExpect(MockMvcResultMatchers.jsonPath("issuer").value(authServerSettings.getIssuer()))
                 .andReturn();
     }
 

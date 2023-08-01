@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 /**
- * @author Max Pestov, massenzio
+ * @author massenzio-p
  * @since 12.2022
  *
  * Tests for authorization function of getting authorization code and access token.
@@ -45,7 +45,7 @@ public class OAuth2AuthorizationGrantIntegrationTestsIntegration extends Abstrac
      */
     @Test
     public void requestWhenAuthorizationRequestNotAuthenticatedThenUnauthorized() throws Exception {
-        this.mvc.perform(MockMvcRequestBuilders.get(providerSettings.getAuthorizationEndpoint())
+        this.mvc.perform(MockMvcRequestBuilders.get(authServerSettings.getAuthorizationEndpoint())
                         .params(super.getAuthorizationRequestParameters(super.getNonConsentRegisteredClient())))
                 /* TODO: #7. Fix this within issue. Status must be unauthorized for api client */
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
@@ -64,7 +64,7 @@ public class OAuth2AuthorizationGrantIntegrationTestsIntegration extends Abstrac
         RegisteredClient missingRegisteredClient = RegisteredClient.from(super.getNonConsentRegisteredClient())
                 .clientId("missing-client")
                 .build();
-        this.mvc.perform(MockMvcRequestBuilders.get(providerSettings.getAuthorizationEndpoint())
+        this.mvc.perform(MockMvcRequestBuilders.get(authServerSettings.getAuthorizationEndpoint())
                         .params(super.getAuthorizationRequestParameters(missingRegisteredClient)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
@@ -93,7 +93,7 @@ public class OAuth2AuthorizationGrantIntegrationTestsIntegration extends Abstrac
      */
     @Test
     public void requestWhenAuthorizationRequestAuthenticatedThenRedirectToClient() throws Exception {
-        assertAuthorizationRequestRedirectsToClient(providerSettings.getAuthorizationEndpoint());
+        assertAuthorizationRequestRedirectsToClient(authServerSettings.getAuthorizationEndpoint());
     }
 
     /**
@@ -105,10 +105,10 @@ public class OAuth2AuthorizationGrantIntegrationTestsIntegration extends Abstrac
     public void requestWhenTokenRequestValidThenReturnAccessTokenResponse() throws Exception {
         RegisteredClient registeredClient = super.getNonConsentRegisteredClient();
 
-        OAuth2Authorization authorization = super.authorizeNonConsentClient(registeredClient, providerSettings.getAuthorizationEndpoint());
+        OAuth2Authorization authorization = super.authorizeNonConsentClient(registeredClient, authServerSettings.getAuthorizationEndpoint());
 
         OAuth2AccessTokenResponse accessTokenResponse = getValidAccessTokenResponse(
-                registeredClient, authorization, providerSettings.getTokenEndpoint());
+                registeredClient, authorization, authServerSettings.getTokenEndpoint());
 
         // Assert user authorities was propagated as claim in JWT
         Jwt jwt = this.jwtDecoder.decode(accessTokenResponse.getAccessToken().getTokenValue());
@@ -129,7 +129,7 @@ public class OAuth2AuthorizationGrantIntegrationTestsIntegration extends Abstrac
     public void requestWhenRequiresConsentThenDisplaysConsentPage() throws Exception {
         RegisteredClient registeredClient = super.getConsentRegisteredClient();
 
-        String consentPage = this.mvc.perform(MockMvcRequestBuilders.get(providerSettings.getAuthorizationEndpoint())
+        String consentPage = this.mvc.perform(MockMvcRequestBuilders.get(authServerSettings.getAuthorizationEndpoint())
                         .params(super.getAuthorizationRequestParameters(registeredClient))
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
@@ -166,9 +166,9 @@ public class OAuth2AuthorizationGrantIntegrationTestsIntegration extends Abstrac
         RegisteredClient registeredClient = super.getConsentRegisteredClient();
 
         OAuth2Authorization authorization = super.authorizeWithConsent(
-                registeredClient, providerSettings.getAuthorizationEndpoint());
+                registeredClient, authServerSettings.getAuthorizationEndpoint());
 
-        this.mvc.perform(post(providerSettings.getTokenEndpoint())
+        this.mvc.perform(post(authServerSettings.getTokenEndpoint())
                         .params(getTokenRequestParameters(registeredClient, authorization))
                         .header(HttpHeaders.AUTHORIZATION, getAuthorizationHeader(registeredClient)))
                 .andExpect(MockMvcResultMatchers.status().isOk())

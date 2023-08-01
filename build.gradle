@@ -22,6 +22,7 @@ dependencies {
     // Annotation processing +
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
     // Annotation processing -
 
     // Core +
@@ -35,16 +36,22 @@ dependencies {
 
     // Security +
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-authorization-server', version: '0.3.1'
+    implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.1.1'
 
     testImplementation 'org.springframework.security:spring-security-test'
     // Security -
 
     // Data +
-        implementation 'org.springframework.data:spring-data-jpa:3.1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
+    compileOnly 'com.mysql:mysql-connector-j:8.0.32'
+    testImplementation 'com.h2database:h2:2.1.214'
     // Data
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named('compileJava') {
+    inputs.files(tasks.named('processResources'))
 }

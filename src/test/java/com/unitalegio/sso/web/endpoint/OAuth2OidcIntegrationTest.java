@@ -1,7 +1,7 @@
 package com.unitalegio.sso.web.endpoint;
 
 import com.unitalegio.sso.web.AbstractOAuth2IntegrationTest;
-import com.unitalegio.sso.web.config.SecurityConfig;
+import com.unitalegio.condis.sso.config.SecurityConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.security.Principal;
 
 /**
- * @author Max Pestov, massenzio
+ * @author massenzio-p
  * @since 01.2023
  * <p>
  * Tests for OpenID operations.
@@ -32,7 +32,7 @@ public class OAuth2OidcIntegrationTest extends AbstractOAuth2IntegrationTest {
 
         this.mvc.perform(MockMvcRequestBuilders.get(SecurityConfig.DEFAULT_OIDC_PROVIDER_CONFIGURATION_ENDPOINT_URI))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.jsonPath("issuer").value(providerSettings.getIssuer()));
+                .andExpect(MockMvcResultMatchers.jsonPath("issuer").value(authServerSettings.getIssuer()));
     }
 
     /**
@@ -45,11 +45,11 @@ public class OAuth2OidcIntegrationTest extends AbstractOAuth2IntegrationTest {
         RegisteredClient registeredClientWithOpenIDScope = getNonConsentRegisteredClient();
         OAuth2Authorization clientAuth = authorizeNonConsentClient(
                 registeredClientWithOpenIDScope,
-                providerSettings.getAuthorizationEndpoint());
+                authServerSettings.getAuthorizationEndpoint());
         OAuth2Authorization tokenAuth = authorizeUserAndGetAccessToken(
                 registeredClientWithOpenIDScope,
                 clientAuth,
-                providerSettings.getTokenEndpoint()
+                authServerSettings.getTokenEndpoint()
         );
         // Assert user authorities was propagated as claim in ID Token
         UsernamePasswordAuthenticationToken tokenAuthPrincipal = tokenAuth.getAttribute(Principal.class.getName());

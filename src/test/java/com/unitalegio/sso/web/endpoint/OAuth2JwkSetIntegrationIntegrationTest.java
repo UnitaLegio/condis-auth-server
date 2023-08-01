@@ -8,7 +8,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 /**
- * @author Max Pestov, massenzio-p
+ * @author massenzio-p
  * @since 12.2022
  *
  * Tests for jwk set endpoint.
@@ -27,7 +27,7 @@ public class OAuth2JwkSetIntegrationIntegrationTest extends AbstractOAuth2Integr
      */
     @Test
     public void testJwkSet() throws Exception {
-        super.mvc.perform(MockMvcRequestBuilders.get(providerSettings.getJwkSetEndpoint()))
+        super.mvc.perform(MockMvcRequestBuilders.get(authServerSettings.getJwkSetEndpoint()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.header()
                         .string(HttpHeaders.CACHE_CONTROL,

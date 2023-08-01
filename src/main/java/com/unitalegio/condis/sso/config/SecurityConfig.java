@@ -1,10 +1,11 @@
-package com.unitalegio.sso.web.config;
+package com.unitalegio.condis.sso.config;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -12,8 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -22,8 +22,10 @@ import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
-import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -45,28 +47,29 @@ public class SecurityConfig {
     private static final String AUTHORITIES_CLAIM = "authorities";
     public static final String DEFAULT_OIDC_PROVIDER_CONFIGURATION_ENDPOINT_URI = "/.well-known/openid-configuration";
 
+    @Value("${ul.issuer}")
+    private String issuer;
+
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @Bean
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(httpSecurity);
+        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+                httpSecurity.getConfigurer(OAuth2AuthorizationServerConfigurer.class);
+
         authorizationServerConfigurer.oidc(oidc -> oidc.clientRegistrationEndpoint(Customizer.withDefaults()));
 
-//        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(httpSecurity);
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         httpSecurity
-/*                .requestMatcher(endpointsMatcher)
-                    .authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())*/
-                .requestMatcher(endpointsMatcher)
-                    .exceptionHandling(
-                // Redirect to the login page when not authenticated from the
-                // authorization endpoint
-                    (exceptions) -> exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-                /* TODO: #7. Implement EntryPoint which will extend LoginUrlAuth... ^^^
-                 *   and will return 401 if client requests 'api' scope;
-                 * Arrays.stream(request.getParameter("scope").split(" ")).filter(val -> val.equals("api"))
-                 */)
-                .csrf().disable()
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .securityMatcher(endpointsMatcher).exceptionHandling(
+                        // Redirect to the login page when not authenticated from the
+                        // authorization endpoint
+                        (exceptions) ->
+                                exceptions.authenticationEntryPoint(
+                                        new LoginUrlAuthenticationEntryPoint("/login")))
+                .csrf(AbstractHttpConfigurer::disable)
+                .oauth2ResourceServer(httpSecurityOAuth2ResourceServerConfigurer ->
+                        httpSecurityOAuth2ResourceServerConfigurer.jwt(Customizer.withDefaults()))
                 .apply(authorizationServerConfigurer);
 
         return httpSecurity.build();
@@ -74,14 +77,28 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico");
+        return (web) -> web.ignoring()
+                .requestMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico");
     }
+
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         // TODO: Create RegisteredClientRepository within DB #3;
 
-        RegisteredClient tempRegisteredClient = RegisteredClient.withId("tempId").clientId("tempClientId").clientSecret("{noop}tempSecret").clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST).authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE).authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN).authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS).redirectUri("http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc").redirectUri("http://127.0.0.1:8080/authorized").scope(OidcScopes.OPENID).scope("temp.temp1").scope("temp.temp2").clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build()).build();
+        RegisteredClient tempRegisteredClient = RegisteredClient.withId("tempId")
+                .clientId("tempClientId")
+                .clientSecret("{noop}tempSecret")
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .redirectUri("http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc")
+                .redirectUri("http://127.0.0.1:8080/authorized")
+                .scope(OidcScopes.OPENID).scope("temp.temp1")
+                .scope("temp.temp2")
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .build();
 
         return new InMemoryRegisteredClientRepository(tempRegisteredClient);
     }
@@ -122,9 +139,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public ProviderSettings providerSettings() {
-        // TODO: Inject provider parameters from configuration yaml;
-        ProviderSettings providerSettings = ProviderSettings.builder().issuer("http://unitalegio.ml").build();
+    public AuthorizationServerSettings providerSettings() {
+        AuthorizationServerSettings providerSettings = AuthorizationServerSettings.builder().issuer(issuer).build();
         // TODO: Create functional allowing to see these endpoints online.
         String ingot = """
                 Authorization endpoint -> %s
