@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="net.unitalegio.condis.sso.usecase.user_details.CondisUserDetailsComponentTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-04-11T22:09:23" hostname="massenzio-HP-Laptop-17-by0xxx" time="1.548">
+  <properties/>
+  <testcase name="testUserNotFoundException()" classname="net.unitalegio.condis.sso.usecase.user_details.CondisUserDetailsComponentTest" time="1.548"/>
+  <system-out><![CDATA[02:09:15.271 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [net.unitalegio.condis.sso.usecase.user_details.CondisUserDetailsComponentTest]: CondisUserDetailsComponentTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+02:09:15.582 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration net.unitalegio.condis.sso.CondisSsoServer for test class net.unitalegio.condis.sso.usecase.user_details.CondisUserDetailsComponentTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.4)
+
+2024-04-12T02:09:16.717+04:00  INFO 3344201 --- [    Test worker] u.c.s.u.u.CondisUserDetailsComponentTest : Starting CondisUserDetailsComponentTest using Java 17.0.6 with PID 3344201 (started by massenzio in /mnt/HDD_SHARE/dev/courses/condis-sso)
+2024-04-12T02:09:16.721+04:00  INFO 3344201 --- [    Test worker] u.c.s.u.u.CondisUserDetailsComponentTest : No active profile set, falling back to 1 default profile: "default"
+2024-04-12T02:09:18.043+04:00  INFO 3344201 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-04-12T02:09:18.220+04:00  INFO 3344201 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 160 ms. Found 2 JPA repository interfaces.
+2024-04-12T02:09:18.359+04:00  INFO 3344201 --- [    Test worker] beddedDataSourceBeanFactoryPostProcessor : Replacing 'dataSource' DataSource bean with embedded version
+2024-04-12T02:09:18.722+04:00  INFO 3344201 --- [    Test worker] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:h2:mem:4954d359-cc37-4c9e-909b-709555979b86;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+2024-04-12T02:09:19.403+04:00  INFO 3344201 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-04-12T02:09:19.540+04:00  INFO 3344201 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2024-04-12T02:09:19.649+04:00  INFO 3344201 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-04-12T02:09:20.260+04:00  INFO 3344201 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-04-12T02:09:20.376+04:00  WARN 3344201 --- [    Test worker] org.hibernate.dialect.Dialect            : HHH000511: The 2.1.0 version for [org.hibernate.dialect.PostgreSQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 12.0.0. Check the community dialects project for available legacy versions.
+2024-04-12T02:09:20.390+04:00  WARN 3344201 --- [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-04-12T02:09:22.453+04:00  INFO 3344201 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-04-12T02:09:22.461+04:00  INFO 3344201 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-04-12T02:09:23.522+04:00  INFO 3344201 --- [    Test worker] u.c.s.u.u.CondisUserDetailsComponentTest : Started CondisUserDetailsComponentTest in 7.794 seconds (process running for 10.674)
+Hibernate: select ue1_0.id,ue1_0.confirmed,ue1_0.created_at,ue1_0.credentials,ue1_0.email,ue1_0.enabled,ue1_0.updated_at,ue1_0.username from condis_sso.sso_users ue1_0 where ue1_0.username=?
+2024-04-12T02:09:25.078+04:00  INFO 3344201 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

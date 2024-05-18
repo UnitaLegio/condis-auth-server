@@ -1,10 +1,10 @@
 plugins {
-    id 'org.springframework.boot' version '3.1.0'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.springframework.boot' version '3.2.4'
+    id 'io.spring.dependency-management' version '1.1.4'
     id 'java'
 }
 
-group = 'com.unita-legio'
+group = 'net.unitalegio'
 version = '0.0.1'
 sourceCompatibility = '17'
 
@@ -36,14 +36,14 @@ dependencies {
 
     // Security +
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.1.1'
+    implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.2.3'
 
     testImplementation 'org.springframework.security:spring-security-test'
     // Security -
 
     // Data +
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
-    compileOnly 'com.mysql:mysql-connector-j:8.0.32'
+    compileOnly 'org.postgresql:postgresql:42.7.3'
     testImplementation 'com.h2database:h2:2.1.214'
     // Data
 }
