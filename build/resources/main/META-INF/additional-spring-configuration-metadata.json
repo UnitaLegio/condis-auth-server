@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "ul.issuer",
-      "type": "java.lang.String",
-      "description": "Issuer provider setting, which is url (e.g. http://unitalegio.ml)."
-  }
-] }

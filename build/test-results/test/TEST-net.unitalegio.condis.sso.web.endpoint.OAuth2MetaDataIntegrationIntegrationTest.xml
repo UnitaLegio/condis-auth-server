@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="net.unitalegio.condis.sso.web.endpoint.OAuth2MetaDataIntegrationIntegrationTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-11-02T18:06:57" hostname="massenzio-HP-Laptop-17-by0xxx" time="0.173">
-  <properties/>
-  <testcase name="requestWhenAuthorizationServerMetadataRequestAndIssuerSetThenReturnMetadataResponse()" classname="net.unitalegio.condis.sso.web.endpoint.OAuth2MetaDataIntegrationIntegrationTest" time="0.173"/>
-  <system-out><![CDATA[2024-11-02T22:06:57.110+04:00 DEBUG 3259346 --- [    Test worker] o.s.security.web.FilterChainProxy        : Securing GET /.well-known/oauth-authorization-server
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

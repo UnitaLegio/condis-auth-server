@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="net.unitalegio.condis.sso.web.endpoint.OAuth2JwkSetIntegrationIntegrationTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-11-02T18:06:56" hostname="massenzio-HP-Laptop-17-by0xxx" time="0.252">
-  <properties/>
-  <testcase name="testJwkSet()" classname="net.unitalegio.condis.sso.web.endpoint.OAuth2JwkSetIntegrationIntegrationTest" time="0.252"/>
-  <system-out><![CDATA[2024-11-02T22:06:56.835+04:00 DEBUG 3259346 --- [    Test worker] o.s.security.web.FilterChainProxy        : Securing GET /oauth2/jwks
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
