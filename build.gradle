@@ -1,12 +1,24 @@
 plugins {
-    id 'org.springframework.boot' version '3.2.4'
-    id 'io.spring.dependency-management' version '1.1.4'
     id 'java'
+    id 'idea'
+    alias libs.plugins.springBootPlugin
+    alias libs.plugins.springDependencyManagementPlugin
 }
 
-group = 'net.unitalegio'
+group = 'space.condis'
 version = '0.0.1'
-sourceCompatibility = '17'
+
+java {
+    toolchain {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+}
+
+idea.module {
+    downloadJavadoc = true
+    downloadSources = true
+}
 
 configurations {
     compileOnly {
@@ -19,33 +31,27 @@ repositories {
 }
 
 dependencies {
-    // Annotation processing +
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
-    // Annotation processing -
+    // Annotation processing
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
 
-    // Core +
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'net.sourceforge.htmlunit:htmlunit:2.70.0'
-
-    // Core -
+    // Core
+    implementation libs.springBootStarter
+    implementation libs.springBootStarterWeb
+    implementation libs.springOAuth2Server
 
     // Security +
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.2.3'
-
-    testImplementation 'org.springframework.security:spring-security-test'
-    // Security -
+    implementation libs.springSecurity
 
     // Data +
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
-    compileOnly 'org.postgresql:postgresql:42.7.3'
-    testImplementation 'com.h2database:h2:2.1.214'
-    // Data
+    implementation libs.springJpa
+    compileOnly libs.postgresql
+    testAndDevelopmentOnly libs.h2
+
+    // Testing
+    testImplementation libs.springBootStarterTest
+    testImplementation libs.htmlUnit
+    testImplementation libs.springSecurityTest
 }
 
 tasks.named('test') {

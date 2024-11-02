@@ -1,0 +1,29 @@
+[versions]
+springBoot = "3.3.+"
+lombok = "1.18.+"
+
+
+[libraries]
+# Annotation processing
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+springBootStarter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "springBoot" }
+springBootStarterWeb = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springBoot" }
+springOAuth2Server = { module = "org.springframework.security:spring-security-oauth2-authorization-server", version = "1.3.+" }
+
+# Security
+springSecurity = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
+
+# Data
+h2 = { module = "com.h2database:h2", version = "2.3.+" }
+postgresql = { module = "org.postgresql:postgresql", version = "42.7.+" }
+springJpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springBoot" }
+
+# Testing
+springBootStarterTest = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springBoot" }
+htmlUnit = { module = "net.sourceforge.htmlunit:htmlunit", version = "2.70.+" }
+springSecurityTest = { module = "org.springframework.security:spring-security-test", version = "6.3.+" }
+
+
+[plugins]
+springBootPlugin = { id = "org.springframework.boot", version.ref = 'springBoot' }
+springDependencyManagementPlugin = { id = "io.spring.dependency-management", version = '1.1.+' }
